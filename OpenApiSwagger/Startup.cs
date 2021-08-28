@@ -32,8 +32,6 @@ namespace OpenApiSwagger
         {
             services.AddMvc(setupAction =>
             {
-
-
                 setupAction.ReturnHttpNotAcceptable = true;
 
                 //var jsonOutputFormatter = setupAction.OutputFormatters
@@ -59,6 +57,7 @@ namespace OpenApiSwagger
             // it's better to store the connection string in an environment variable)
             var connectionString = Configuration["ConnectionStrings:LibraryDBConnectionString"];
             services.AddDbContext<LibraryContext>(o => o.UseSqlServer(connectionString));
+            services.AddMvc(options => options.EnableEndpointRouting = false);
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -83,7 +82,7 @@ namespace OpenApiSwagger
 
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
-
+            
             services.AddAutoMapper();
 
             //reg/configuring the swagger generator 
@@ -124,9 +123,15 @@ new DefaultContractResolver();
 
             app.UseSwagger();
 
+            app.UseSwaggerUI(setupAction =>
+            {
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecification/swagger.json", "Library API");
+                setupAction.RoutePrefix = "";//to make doc available at the route
+            });
             app.UseStaticFiles();
+            app.UseMvc();
 
-            //app.UseMvc();
+
         }
     }
 }
