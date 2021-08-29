@@ -19,6 +19,7 @@ using System.Reflection;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 
+[assembly: ApiConventionType(typeof(DefaultApiConventions))] //status code convention - globally
 namespace OpenApiSwagger
 {
     public class Startup
