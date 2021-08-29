@@ -32,6 +32,11 @@ namespace OpenApiSwagger.Controllers
             return Ok(_mapper.Map<IEnumerable<Author>>(authorsFromRepo));
         }
 
+        /// <summary>
+        /// Get an Author by His/Her Id
+        /// </summary>
+        /// <param name="authorId">The Id of the author you want to get</param>
+        /// <returns>An author with Id, firstname, lastName fields</returns>
         [HttpGet("{authorId}")]
         public async Task<ActionResult<Author>> GetAuthor(
             Guid authorId)
@@ -65,6 +70,7 @@ namespace OpenApiSwagger.Controllers
             // return the author
             return Ok(_mapper.Map<Author>(authorFromRepo)); 
         }
+
 
         [HttpPatch("{authorId}")]
         public async Task<ActionResult<Author>> UpdateAuthor(

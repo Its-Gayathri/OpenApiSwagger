@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
+using System.Reflection;
+using System.IO;
 
 namespace OpenApiSwagger
 {
@@ -94,6 +96,11 @@ namespace OpenApiSwagger
                         Title = "Library Api",//other properties can also be set up here like description, extenions etc
                         Version = "1"
                     });
+
+                //setting up description section of doc
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";//OpenApiSwagger.xml
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory,xmlCommentsFile);
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
             });
             // services.AddMvc().AddNewtonsoftJson();
 

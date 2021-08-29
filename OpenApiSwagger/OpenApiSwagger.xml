@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenApiSwagger</name>
+    </assembly>
+    <members>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsController.GetAuthor(System.Guid)">
+            <summary>
+            Get an Author by His/Her Id
+            </summary>
+            <param name="authorId">The Id of the author you want to get</param>
+            <returns>An author with Id, firstname, lastName fields</returns>
+        </member>
+        <member name="T:OpenApiSwagger.Models.Author">
+            <summary>
+            An author with Id, firstname, lastName fields
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.Author.Id">
+            <summary>
+            Id of the Author
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.Author.FirstName">
+            <summary>
+            FirstName of the Author
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.Author.LastName">
+            <summary>
+            LastName of the Author
+            </summary>
+        </member>
+        <member name="T:OpenApiSwagger.Models.AuthorForUpdate">
+            <summary>
+            An author for update with FirstName and LastName
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.AuthorForUpdate.FirstName">
+            <summary>
+            FirstName of the author
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.AuthorForUpdate.LastName">
+            <summary>
+            LastName of the author
+            </summary>
+        </member>
+    </members>
+</doc>
