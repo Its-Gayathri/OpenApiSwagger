@@ -37,7 +37,7 @@
             <param name="authorId"></param>
             <param name="bookId"></param>
             <returns>An ActionResult of Book</returns>
-            <response code= "200">Returns the requested Book</response>
+            <response code= "200">Returns the requested Book</response> // to change the default description of the status code
         </member>
         <member name="T:OpenApiSwagger.Models.Author">
             <summary>

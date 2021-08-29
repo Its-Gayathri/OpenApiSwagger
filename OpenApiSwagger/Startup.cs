@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace OpenApiSwagger
 {
@@ -34,6 +35,11 @@ namespace OpenApiSwagger
         {
             services.AddMvc(setupAction =>
             {
+            //to add status codes globally to all controllers
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+
                 setupAction.ReturnHttpNotAcceptable = true;
 
                 //var jsonOutputFormatter = setupAction.OutputFormatters

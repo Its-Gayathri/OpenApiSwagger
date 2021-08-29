@@ -26,7 +26,9 @@ namespace OpenApiSwagger.Controllers
             _authorRepository = authorRepository;
             _mapper = mapper;
         }
-       
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)] 
+        [ProducesDefaultResponseType] 
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks(
         Guid authorId )
@@ -46,7 +48,7 @@ namespace OpenApiSwagger.Controllers
         /// <param name="bookId"></param>
         /// <returns>An ActionResult of Book</returns>
         /// <response code= "200">Returns the requested Book</response> // to change the default description of the status code
-        [ProducesResponseType(StatusCodes.Status404NotFound)] // Expected status codes
+        // Expected status codes
         //[ProducesResponseType(StatusCodes.Status200OK)] OR
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Book))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
