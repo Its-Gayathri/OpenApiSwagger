@@ -30,6 +30,15 @@
             ] 
             </remarks>
         </member>
+        <member name="M:OpenApiSwagger.Controllers.BooksController.GetBook(System.Guid,System.Guid)">
+            <summary>
+            Get a book by Id
+            </summary>
+            <param name="authorId"></param>
+            <param name="bookId"></param>
+            <returns>An ActionResult of Book</returns>
+            <response code= "200">Returns the requested Book</response>
+        </member>
         <member name="T:OpenApiSwagger.Models.Author">
             <summary>
             An author with Id, firstname, lastName fields
