@@ -36,7 +36,7 @@ namespace OpenApiSwagger.Controllers
         /// Get an Author by His/Her Id
         /// </summary>
         /// <param name="authorId">The Id of the author you want to get</param>
-        /// <returns>An author with Id, firstname, lastName fields</returns>
+        /// <returns>An ActionResult of type Author</returns>
         [HttpGet("{authorId}")]
         public async Task<ActionResult<Author>> GetAuthor(
             Guid authorId)
@@ -71,7 +71,23 @@ namespace OpenApiSwagger.Controllers
             return Ok(_mapper.Map<Author>(authorFromRepo)); 
         }
 
-
+        /// <summary>
+        /// Partially Update an Author
+        /// </summary>
+        /// <param name="authorId">The Id of the author you want to get</param>
+        /// <param name="patchDocument">The set of operations to apply to the author</param>
+        /// <returns>An ActionResult of type Author</returns>
+        /// <remarks>
+        /// Sample request (this request updates the authors first name) \
+        /// PATCH /authors/id \
+        /// [ \
+        ///     { \
+        ///        "op": "replace", \
+        ///         "path": "/firstname", \
+        ///         "value": "new first name" \
+        ///     } \
+        /// ] 
+        /// </remarks>
         [HttpPatch("{authorId}")]
         public async Task<ActionResult<Author>> UpdateAuthor(
             Guid authorId,

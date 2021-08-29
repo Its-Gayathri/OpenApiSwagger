@@ -9,7 +9,26 @@
             Get an Author by His/Her Id
             </summary>
             <param name="authorId">The Id of the author you want to get</param>
-            <returns>An author with Id, firstname, lastName fields</returns>
+            <returns>An ActionResult of type Author</returns>
+        </member>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsController.UpdateAuthor(System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{OpenApiSwagger.Models.AuthorForUpdate})">
+            <summary>
+            Partially Update an Author
+            </summary>
+            <param name="authorId">The Id of the author you want to get</param>
+            <param name="patchDocument">The set of operations to apply to the author</param>
+            <returns>An ActionResult of type Author</returns>
+            <remarks>
+            Sample request (this request updates the authors first name) \
+            PATCH /authors/id \
+            [ \
+                { \
+                   "op": "replace", \
+                    "path": "/firstname", \
+                    "value": "new first name" \
+                } \
+            ] 
+            </remarks>
         </member>
         <member name="T:OpenApiSwagger.Models.Author">
             <summary>

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenApiSwagger.Entities
 {
-
+#pragma warning disable CS1591  // ---> to ignore xml comments warning at class level
     [Table("Authors")]
     public class Author
     {
@@ -22,4 +22,6 @@ namespace OpenApiSwagger.Entities
 
         public ICollection<Book> Books { get; set; } = new List<Book>();
     }
+#pragma warning restore CS1591
+
 }
