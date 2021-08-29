@@ -94,7 +94,21 @@ namespace OpenApiSwagger
                     new Microsoft.OpenApi.Models.OpenApiInfo()
                     {
                         Title = "Library Api",//other properties can also be set up here like description, extenions etc
-                        Version = "1"
+                        Version = "1",
+                        Description = "Through this API you can access authors and their books.",
+                        Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                        {
+                            Email = "gayathriu64@gmail.com",
+                            Name = "Gayathri U",
+                            Url = new Uri("https://github.com/Its-Gayathri")
+
+                        },
+                        License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                        {
+                            Name = "abc License",
+                            Url = new Uri("https://github.com/Its-Gayathri")
+                        },
+                       // etc TermsOfService
                     });
 
                 //setting up description section of doc
