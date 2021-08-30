@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace OpenApiSwagger.Controllers
 {
+    [Produces("application/json","application/xml")]
     [Route("api/authors/{authorId}/books")]
     [ApiController]
     public class BooksController : ControllerBase

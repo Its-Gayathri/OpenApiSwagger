@@ -1,23 +1,19 @@
 using AutoMapper;
-using OpenApiSwagger.Contexts;
-using OpenApiSwagger.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
-using System.Reflection;
+using OpenApiSwagger.Contexts;
+using OpenApiSwagger.Services;
+using System;
 using System.IO;
-using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Reflection;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))] //status code convention - globally(preferred)
 namespace OpenApiSwagger
@@ -41,8 +37,11 @@ namespace OpenApiSwagger
                 //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
                 //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
 
-                setupAction.ReturnHttpNotAcceptable = true;
+                //setupAction.ReturnHttpNotAcceptable = true; //--> when an unsupported media type is passed
+                //through postman, the above code when commneted returns response in default format(Xml)
+                //else 406 Not acceptable
 
+                setupAction.OutputFormatters.Add(new XmlSerializerOutputFormatter());
                 //var jsonOutputFormatter = setupAction.OutputFormatters
                 //    .OfType<SystemTextJsonOutputFormatter>().FirstOrDefault();
 
