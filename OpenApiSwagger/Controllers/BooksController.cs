@@ -73,6 +73,7 @@ namespace OpenApiSwagger.Controllers
 
 
         [HttpPost()]
+        [Consumes("application/json","application/xml")]
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             [FromBody] BookForCreation bookForCreation)
