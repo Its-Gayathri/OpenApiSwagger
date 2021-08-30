@@ -19,7 +19,7 @@ using System.Reflection;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 
-[assembly: ApiConventionType(typeof(DefaultApiConventions))] //status code convention - globally
+[assembly: ApiConventionType(typeof(DefaultApiConventions))] //status code convention - globally(preferred)
 namespace OpenApiSwagger
 {
     public class Startup
@@ -37,9 +37,9 @@ namespace OpenApiSwagger
             services.AddMvc(setupAction =>
             {
             //to add status codes globally to all controllers
-                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
-                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
-                setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+                //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+                //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
 
                 setupAction.ReturnHttpNotAcceptable = true;
 

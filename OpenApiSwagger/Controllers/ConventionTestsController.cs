@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OpenApiSwagger.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiConventionType(typeof(CustomConventions))]
     public class ConventionTestsController : ControllerBase
     {
         // GET: api/<ConventionTestsController>
@@ -28,7 +24,8 @@ namespace OpenApiSwagger.Controllers
 
         // POST api/<ConventionTestsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        //[ApiConventionMethod(typeof(CustomConventions),nameof(CustomConventions.Insert))] // custom convention
+        public void InsertTest([FromBody] string value) //replaced Post with InsertTest--> in this case it requires custom convention
         {
         }
 
