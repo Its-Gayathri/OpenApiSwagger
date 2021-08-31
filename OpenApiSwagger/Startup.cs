@@ -117,6 +117,12 @@ namespace OpenApiSwagger
                        // etc TermsOfService
                     });
 
+                //when 2 get actions with same route (but diff reponse media types ) use this 
+                setupAction.ResolveConflictingActions(apiDescriptions =>
+                {
+                    return apiDescriptions.First();
+                });
+
                 //setting up description section of doc
                 var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";//OpenApiSwagger.xml
                 var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory,xmlCommentsFile);

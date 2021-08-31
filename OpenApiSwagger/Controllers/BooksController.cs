@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Net.Http.Headers;
+using OpenApiSwagger.Attributes;
 
 namespace OpenApiSwagger.Controllers
 {
@@ -51,10 +53,13 @@ namespace OpenApiSwagger.Controllers
         /// <response code= "200">Returns the requested Book</response> // to change the default description of the status code
         // Expected status codes
         //[ProducesResponseType(StatusCodes.Status200OK)] OR
+        [HttpGet("{bookId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Book))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet("{bookId}")]
-        //public async Task<ActionResult<Book>> GetBook(Guid authorId, Guid bookId)   OR to make it generic
+        //[Produces("application/vnd.marvin.book+json")]
+        //[RequestHeaderMatchesMediaType(HeaderNames.Accept,
+        //    "application/json",
+        //    "application/vnd.marvin.book+json")]
         public async Task<IActionResult> GetBook(Guid authorId, Guid bookId)
         {
             if (! await _authorRepository.AuthorExistsAsync(authorId))
