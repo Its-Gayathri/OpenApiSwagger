@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 using OpenApiSwagger.Contexts;
+using OpenApiSwagger.OperationFilters;
 using OpenApiSwagger.Services;
 using System;
 using System.IO;
@@ -90,9 +91,10 @@ namespace OpenApiSwagger
 
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
-            
-            services.AddAutoMapper();
 
+            //services.AddAutoMapper();//todo
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //reg/configuring the swagger generator 
             services.AddSwaggerGen(setupAction =>
             {
@@ -117,6 +119,9 @@ namespace OpenApiSwagger
                        // etc TermsOfService
                     });
 
+                //manipulate each operation with diff media input/output
+                setupAction.OperationFilter<CreateBookOperationFilter>();
+
                 //when 2 get actions with same route (but diff reponse media types ) use this 
                 setupAction.ResolveConflictingActions(apiDescriptions =>
                 {
@@ -138,6 +143,7 @@ new DefaultContractResolver();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [Obsolete]
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
             if (env.IsDevelopment())

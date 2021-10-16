@@ -76,9 +76,15 @@ namespace OpenApiSwagger.Controllers
             return Ok(_mapper.Map<Book>(bookFromRepo));
         }
 
-
+        //*******************************************************************
         [HttpPost()]
-        [Consumes("application/json","application/xml")]
+        [Consumes("application/json","application/xml", "application/vnd.marvin.bookforcreation+json")]
+        [RequestHeaderMatchesMediaType(CommonConstants.contentType,
+            "application/json", "application/vnd.marvin.bookforcreation+json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity,
+            Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary))]      
         public async Task<ActionResult<Book>> CreateBook(
             Guid authorId,
             [FromBody] BookForCreation bookForCreation)
@@ -96,6 +102,42 @@ namespace OpenApiSwagger.Controllers
                 "GetBook",
                 new { authorId, bookId = bookToAdd.Id },
                 _mapper.Map<Book>(bookToAdd));
+        }
+
+        //*******************************************************************
+
+        [HttpPost()]
+        [Consumes("application/json", "application/xml", "application/vnd.marvin.bookforcreationwithamountofpages+json")]
+        [RequestHeaderMatchesMediaType(CommonConstants.contentType,
+             "application/vnd.marvin.bookforcreationwithamountofpages+json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity,
+            Type = typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary))]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<Book>> CreateBookWithAmountOfPages(
+            Guid authorId,
+            [FromBody] BookForCreationWithAmountOfPages bookForCreation)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookToAdd = _mapper.Map<Entities.Book>(bookForCreation);
+            _bookRepository.AddBook(bookToAdd);
+            await _bookRepository.SaveChangesAsync();
+
+            return CreatedAtRoute(
+                "GetBook",
+                new { authorId, bookId = bookToAdd.Id },
+                _mapper.Map<Book>(bookToAdd));
+        }
+
+        private class CommonConstants
+        {
+            public const string contentType = "HeaderNames.ContentType";
+
         }
     }
 }
