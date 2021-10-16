@@ -252,6 +252,13 @@ new DefaultContractResolver();
 
             app.UseSwaggerUI(setupAction =>
             {
+                //injecting css
+                setupAction.InjectStylesheet("/css/Custom-Ui.css");
+                //to read the index page https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/master/src/Swashbuckle.AspNetCore.SwaggerUI/index.html
+                //change the index.html prop- buildAction to embedded resource
+                setupAction.IndexStream = ()
+                       => GetType().Assembly
+                       .GetManifestResourceStream("OpenApiSwagger.EmbeddedAssets.index.html");
                 //forach apiDescription create end point for each of them
                 foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
                 {
