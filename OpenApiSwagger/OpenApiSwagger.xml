@@ -30,6 +30,13 @@
             ] 
             </remarks>
         </member>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsControllerV2.GetAuthors">
+            <summary>
+            Get an Authors (V2)
+            </summary>
+            <returns>An ActionResult of type IEnumerable of Authors</returns>
+            <response code ="200" >Returns the list of Authors</response>
+        </member>
         <member name="M:OpenApiSwagger.Controllers.BooksController.GetBook(System.Guid,System.Guid)">
             <summary>
             Get a book by Id

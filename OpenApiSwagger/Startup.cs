@@ -2,7 +2,10 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-[assembly: ApiConventionType(typeof(DefaultApiConventions))] //status code convention - globally(preferred)
+//[assembly: ApiConventionType(typeof(DefaultApiConventions))] //status code convention - globally(preferred)
 namespace OpenApiSwagger
 {
     public class Startup
@@ -53,7 +56,7 @@ namespace OpenApiSwagger
                 {
                     // remove text/json as it isn't the approved media type
                     // for working with JSON at API level
-                    if (jsonOutputFormatter.SupportedMediaTypes.Contains("application/json"))
+                    if (jsonOutputFormatter.SupportedMediaTypes.Contains("text/json"))
                     {
                         jsonOutputFormatter.SupportedMediaTypes.Remove("application/json");
                     }
@@ -95,50 +98,74 @@ namespace OpenApiSwagger
             //services.AddAutoMapper();//todo
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            //to necessary services to the container - versioning
+            services.AddVersionedApiExplorer(setupAction =>
+            {
+                setupAction.GroupNameFormat = "'v'VV";
+            });
+
+            //registering versioning
+            services.AddApiVersioning(setupAction =>
+            {
+                setupAction.AssumeDefaultVersionWhenUnspecified = true;
+                setupAction.DefaultApiVersion = new ApiVersion(1, 0);
+                setupAction.ReportApiVersions = true;
+                //setupAction.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                //setupAction.ApiVersionReader = new MediaTypeApiVersionReader();
+            });
+
+            var apiVersionDescriptionProvider =
+               services.BuildServiceProvider().GetService<IApiVersionDescriptionProvider>();
+
             //reg/configuring the swagger generator 
             services.AddSwaggerGen(setupAction =>
             {
-                setupAction.SwaggerDoc("LibraryOpenApiSpecificationAuthors", //part of URI where OpenApi spec can be found
-                    new Microsoft.OpenApi.Models.OpenApiInfo()
-                    {
-                        Title = "Library Api (Authors)",//other properties can also be set up here like description, extenions etc
-                        Version = "1",
-                        Description = "Through this API you can access authors.",
-                        Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                //to run through available api versions on apiVersionDescriptionProvider, instead of one
+                //so that multiple swagger docs will be generated with a group name as doc name
+                foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+                {
+                    setupAction.SwaggerDoc($"LibraryOpenAPISpecification{description.GroupName}", //part of URI where OpenApi spec can be found
+                        new Microsoft.OpenApi.Models.OpenApiInfo()
                         {
-                            Email = "gayathriu64@gmail.com",
-                            Name = "Gayathri U",
-                            Url = new Uri("https://github.com/Its-Gayathri")
+                            Title = "Library Api",//other properties can also be set up here like description, extenions etc
+                        Version = description.ApiVersion.ToString(),
+                            Description = "Through this API you can access authors and books.",
+                            Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                            {
+                                Email = "gayathriu64@gmail.com",
+                                Name = "Gayathri U",
+                                Url = new Uri("https://github.com/Its-Gayathri")
 
-                        },
-                        License = new Microsoft.OpenApi.Models.OpenApiLicense()
-                        {
-                            Name = "abc License",
-                            Url = new Uri("https://github.com/Its-Gayathri")
-                        },
+                            },
+                            License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                            {
+                                Name = "abc License",
+                                Url = new Uri("https://github.com/Its-Gayathri")
+                            },
                         // etc TermsOfService
                     });
+                }
 
-                setupAction.SwaggerDoc("LibraryOpenApiSpecificationBooks", //part of URI where OpenApi spec can be found
-                    new Microsoft.OpenApi.Models.OpenApiInfo()
+                //for selecting actions, it compares action's version with doc name (which will have version)
+                setupAction.DocInclusionPredicate((documentName, apiDescription) =>
+                {
+                    var actionApiVersionModel = apiDescription.ActionDescriptor
+                    .GetApiVersionModel(ApiVersionMapping.Explicit | ApiVersionMapping.Implicit);
+
+                    if (actionApiVersionModel == null)
                     {
-                        Title = "Library Api (Books)",//other properties can also be set up here like description, extenions etc
-                        Version = "1",
-                        Description = "Through this API you can access books.",
-                        Contact = new Microsoft.OpenApi.Models.OpenApiContact()
-                        {
-                            Email = "gayathriu64@gmail.com",
-                            Name = "Gayathri U",
-                            Url = new Uri("https://github.com/Its-Gayathri")
+                        return true;
+                    }
 
-                        },
-                        License = new Microsoft.OpenApi.Models.OpenApiLicense()
-                        {
-                            Name = "abc License",
-                            Url = new Uri("https://github.com/Its-Gayathri")
-                        },
-                        // etc TermsOfService
-                    });
+                    if (actionApiVersionModel.DeclaredApiVersions.Any())
+                    {
+                        return actionApiVersionModel.DeclaredApiVersions.Any(v =>
+                        $"LibraryOpenAPISpecificationv{v}" == documentName);
+                    }
+                    return actionApiVersionModel.ImplementedApiVersions.Any(v =>
+                        $"LibraryOpenAPISpecificationv{v}" == documentName);
+                });
 
                 //manipulate each operation with diff media input/output
                 setupAction.OperationFilter<CreateBookOperationFilter>();
@@ -164,8 +191,9 @@ new DefaultContractResolver();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        [Obsolete]
-        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        //[Obsolete]
+        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env
+            , IApiVersionDescriptionProvider apiVersionDescriptionProvider)
         {
             if (env.IsDevelopment())
             {
@@ -185,8 +213,14 @@ new DefaultContractResolver();
 
             app.UseSwaggerUI(setupAction =>
             {
-                setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecificationAuthors/swagger.json", "Library API (Authors)");
-                setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecificationBooks/swagger.json", "Library API (Books)");
+                //forach apiDescription create end point for each of them
+                foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+                {
+                    setupAction.SwaggerEndpoint($"/swagger/" +
+                        $"LibraryOpenAPISpecification{description.GroupName}/swagger.json",
+                        description.GroupName.ToUpperInvariant());
+                }
+                //setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecification/swagger.json", "Library API");
 
                 setupAction.RoutePrefix = "";//to make doc available at the route
             });

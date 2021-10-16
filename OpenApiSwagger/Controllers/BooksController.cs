@@ -12,9 +12,8 @@ using OpenApiSwagger.Attributes;
 namespace OpenApiSwagger.Controllers
 {
     [Produces("application/json","application/xml")]
-    [Route("api/authors/{authorId}/books")]
-    [ApiExplorerSettings(GroupName = "LibraryOpenApiSpecificationBooks")] //for dealing with multiple specifications(can be added at action level also)
-
+    //[Route("api/authors/{authorId}/books")]
+    [Route("api/v{version:apiVersion}/authors/{authorId}/books")]//URI Versioning -default = 1.0
     [ApiController]
     public class BooksController : ControllerBase
     { 

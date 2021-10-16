@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 namespace OpenApiSwagger.Controllers
 {
 
-    [Route("api/authors")]
-    [ApiExplorerSettings(GroupName = "LibraryOpenApiSpecificationAuthors")] //for dealing with multiple specifications(can be added at action level also)
+    //[Route("api/authors")]
+    [Route("api/v{version:apiVersion}/authors")]//URI Versioning - deafult = 1.0
+    //[ApiExplorerSettings(GroupName = "LibraryOpenApiSpecificationAuthors")] //for dealing with multiple specifications(can be added at action level also)
     [ApiController]
     public class AuthorsController : ControllerBase
     {
