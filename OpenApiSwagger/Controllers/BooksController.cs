@@ -13,6 +13,8 @@ namespace OpenApiSwagger.Controllers
 {
     [Produces("application/json","application/xml")]
     [Route("api/authors/{authorId}/books")]
+    [ApiExplorerSettings(GroupName = "LibraryOpenApiSpecificationBooks")] //for dealing with multiple specifications(can be added at action level also)
+
     [ApiController]
     public class BooksController : ControllerBase
     { 

@@ -33,7 +33,7 @@ namespace OpenApiSwagger
         {
             services.AddMvc(setupAction =>
             {
-            //to add status codes globally to all controllers
+                //to add status codes globally to all controllers
                 //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
                 //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
                 //setupAction.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
@@ -98,12 +98,12 @@ namespace OpenApiSwagger
             //reg/configuring the swagger generator 
             services.AddSwaggerGen(setupAction =>
             {
-                setupAction.SwaggerDoc("LibraryOpenApiSpecification", //part of URI where OpenApi spec can be found
+                setupAction.SwaggerDoc("LibraryOpenApiSpecificationAuthors", //part of URI where OpenApi spec can be found
                     new Microsoft.OpenApi.Models.OpenApiInfo()
                     {
-                        Title = "Library Api",//other properties can also be set up here like description, extenions etc
+                        Title = "Library Api (Authors)",//other properties can also be set up here like description, extenions etc
                         Version = "1",
-                        Description = "Through this API you can access authors and their books.",
+                        Description = "Through this API you can access authors.",
                         Contact = new Microsoft.OpenApi.Models.OpenApiContact()
                         {
                             Email = "gayathriu64@gmail.com",
@@ -116,7 +116,28 @@ namespace OpenApiSwagger
                             Name = "abc License",
                             Url = new Uri("https://github.com/Its-Gayathri")
                         },
-                       // etc TermsOfService
+                        // etc TermsOfService
+                    });
+
+                setupAction.SwaggerDoc("LibraryOpenApiSpecificationBooks", //part of URI where OpenApi spec can be found
+                    new Microsoft.OpenApi.Models.OpenApiInfo()
+                    {
+                        Title = "Library Api (Books)",//other properties can also be set up here like description, extenions etc
+                        Version = "1",
+                        Description = "Through this API you can access books.",
+                        Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                        {
+                            Email = "gayathriu64@gmail.com",
+                            Name = "Gayathri U",
+                            Url = new Uri("https://github.com/Its-Gayathri")
+
+                        },
+                        License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                        {
+                            Name = "abc License",
+                            Url = new Uri("https://github.com/Its-Gayathri")
+                        },
+                        // etc TermsOfService
                     });
 
                 //manipulate each operation with diff media input/output
@@ -130,7 +151,7 @@ namespace OpenApiSwagger
 
                 //setting up description section of doc
                 var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";//OpenApiSwagger.xml
-                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory,xmlCommentsFile);
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
                 setupAction.IncludeXmlComments(xmlCommentsFullPath);
             });
             // services.AddMvc().AddNewtonsoftJson();
@@ -164,7 +185,9 @@ new DefaultContractResolver();
 
             app.UseSwaggerUI(setupAction =>
             {
-                setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecification/swagger.json", "Library API");
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecificationAuthors/swagger.json", "Library API (Authors)");
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecificationBooks/swagger.json", "Library API (Books)");
+
                 setupAction.RoutePrefix = "";//to make doc available at the route
             });
             app.UseStaticFiles();
