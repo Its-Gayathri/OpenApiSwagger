@@ -4,6 +4,12 @@
         <name>OpenApiSwagger</name>
     </assembly>
     <members>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsController.GetAuthors">
+            <summary>
+            Get a list of authors
+            </summary>
+            <returns>An ActionResult of type IEnumerable of Author</returns>
+        </member>
         <member name="M:OpenApiSwagger.Controllers.AuthorsController.GetAuthor(System.Guid)">
             <summary>
             Get an Author by His/Her Id
@@ -19,15 +25,15 @@
             <param name="patchDocument">The set of operations to apply to the author</param>
             <returns>An ActionResult of type Author</returns>
             <remarks>
-            Sample request (this request updates the authors first name) \
-            PATCH /authors/id \
-            [ \
-                { \
-                   "op": "replace", \
-                    "path": "/firstname", \
-                    "value": "new first name" \
-                } \
-            ] 
+            Sample request (this request updates the authors **first name**)  
+                PATCH /authors/id  
+                    [  
+                        {  
+                            "op": "replace",  
+                            "path": "/firstname",  
+                            "value": "new first name"  
+                        }  
+                    ]   
             </remarks>
         </member>
         <member name="M:OpenApiSwagger.Controllers.AuthorsControllerV2.GetAuthors">

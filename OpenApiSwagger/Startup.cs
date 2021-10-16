@@ -262,6 +262,14 @@ new DefaultContractResolver();
                 //setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecification/swagger.json", "Library API");
 
                 setupAction.RoutePrefix = "";//to make doc available at the route
+
+                //UI Customization
+                setupAction.DefaultModelExpandDepth(2);
+                setupAction.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
+                setupAction.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+                setupAction.EnableDeepLinking();//#/Authors/GetAuthors will expand and scroll to the get authors opeartion
+                setupAction.DisplayOperationId();
+
             });            
 
             app.UseStaticFiles();

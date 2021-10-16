@@ -27,6 +27,10 @@ namespace OpenApiSwagger.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Get a list of authors
+        /// </summary>
+        /// <returns>An ActionResult of type IEnumerable of Author</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
@@ -80,15 +84,15 @@ namespace OpenApiSwagger.Controllers
         /// <param name="patchDocument">The set of operations to apply to the author</param>
         /// <returns>An ActionResult of type Author</returns>
         /// <remarks>
-        /// Sample request (this request updates the authors first name) \
-        /// PATCH /authors/id \
-        /// [ \
-        ///     { \
-        ///        "op": "replace", \
-        ///         "path": "/firstname", \
-        ///         "value": "new first name" \
-        ///     } \
-        /// ] 
+        /// Sample request (this request updates the authors **first name**)  
+        ///     PATCH /authors/id  
+        ///         [  
+        ///             {  
+        ///                 "op": "replace",  
+        ///                 "path": "/firstname",  
+        ///                 "value": "new first name"  
+        ///             }  
+        ///         ]   
         /// </remarks>
         [HttpPatch("{authorId}")]
         public async Task<ActionResult<Author>> UpdateAuthor(
