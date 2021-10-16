@@ -1,20 +1,26 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
+using OpenApiSwagger.Authentication;
 using OpenApiSwagger.Contexts;
 using OpenApiSwagger.OperationFilters;
 using OpenApiSwagger.Services;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -44,6 +50,18 @@ namespace OpenApiSwagger
                 //setupAction.ReturnHttpNotAcceptable = true; //--> when an unsupported media type is passed
                 //through postman, the above code when commneted returns response in default format(Xml)
                 //else 406 Not acceptable
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
+                setupAction.Filters.Add(
+                    new ProducesDefaultResponseTypeAttribute());
+                setupAction.Filters.Add(
+                    new ProducesResponseTypeAttribute(StatusCodes.Status401Unauthorized));
+                setupAction.Filters.Add(
+                   new AuthorizeFilter());
 
                 setupAction.OutputFormatters.Add(new XmlSerializerOutputFormatter());
                 //var jsonOutputFormatter = setupAction.OutputFormatters
@@ -105,6 +123,11 @@ namespace OpenApiSwagger
                 setupAction.GroupNameFormat = "'v'VV";
             });
 
+
+            //Authentication -basic is default scheme name
+            services.AddAuthentication("Basic")
+            .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("Basic", null);
+
             //registering versioning
             services.AddApiVersioning(setupAction =>
             {
@@ -147,6 +170,22 @@ namespace OpenApiSwagger
                     });
                 }
 
+                setupAction.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme()
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    Description = "Input your username and password to access this API"
+                });
+                setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basicAuth" }
+                        }, new List<string>() }
+                });
                 //for selecting actions, it compares action's version with doc name (which will have version)
                 setupAction.DocInclusionPredicate((documentName, apiDescription) =>
                 {
@@ -223,8 +262,13 @@ new DefaultContractResolver();
                 //setupAction.SwaggerEndpoint("/swagger/LibraryOpenApiSpecification/swagger.json", "Library API");
 
                 setupAction.RoutePrefix = "";//to make doc available at the route
-            });
+            });            
+
             app.UseStaticFiles();
+
+            //adding authentication middleware to req pipeline
+
+            app.UseAuthentication();
             app.UseMvc();
 
 
