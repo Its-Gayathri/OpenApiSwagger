@@ -81,7 +81,11 @@ namespace OpenApiSwagger
                 }
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+           .AddNewtonsoftJson(options => {
+               options.SerializerSettings.ContractResolver =
+            new DefaultContractResolver();
+           });
             // register the DbContext on the container, getting the connection string from
             // appSettings (note: use this during development; in a production environment,
             // it's better to store the connection string in an environment variable)
@@ -121,6 +125,7 @@ namespace OpenApiSwagger
             services.AddVersionedApiExplorer(setupAction =>
             {
                 setupAction.GroupNameFormat = "'v'VV";
+                setupAction.SubstituteApiVersionInUrl = true;
             });
 
 
@@ -200,10 +205,10 @@ namespace OpenApiSwagger
                     if (actionApiVersionModel.DeclaredApiVersions.Any())
                     {
                         return actionApiVersionModel.DeclaredApiVersions.Any(v =>
-                        $"LibraryOpenAPISpecificationv{v}" == documentName);
+                        $"LibraryOpenAPISpecificationv{v.ToString()}" == documentName);
                     }
                     return actionApiVersionModel.ImplementedApiVersions.Any(v =>
-                        $"LibraryOpenAPISpecificationv{v}" == documentName);
+                        $"LibraryOpenAPISpecificationv{v.ToString()}" == documentName);
                 });
 
                 //manipulate each operation with diff media input/output
@@ -222,11 +227,7 @@ namespace OpenApiSwagger
             });
             // services.AddMvc().AddNewtonsoftJson();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-            .AddNewtonsoftJson(options => {
-                options.SerializerSettings.ContractResolver =
-new DefaultContractResolver();
-            });
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
