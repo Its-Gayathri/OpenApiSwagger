@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OpenApiSwagger</name>
+    </assembly>
+    <members>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsController.GetAuthors">
+            <summary>
+            Get a list of authors
+            </summary>
+            <returns>An ActionResult of type IEnumerable of Author</returns>
+        </member>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsController.GetAuthor(System.Guid)">
+            <summary>
+            Get an Author by His/Her Id
+            </summary>
+            <param name="authorId">The Id of the author you want to get</param>
+            <returns>An ActionResult of type Author</returns>
+        </member>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsController.UpdateAuthor(System.Guid,Microsoft.AspNetCore.JsonPatch.JsonPatchDocument{OpenApiSwagger.Models.AuthorForUpdate})">
+            <summary>
+            Partially Update an Author
+            </summary>
+            <param name="authorId">The Id of the author you want to get</param>
+            <param name="patchDocument">The set of operations to apply to the author</param>
+            <returns>An ActionResult of type Author</returns>
+            <remarks>
+            Sample request (this request updates the authors **first name**)  
+                PATCH /authors/id  
+                    [  
+                        {  
+                            "op": "replace",  
+                            "path": "/firstname",  
+                            "value": "new first name"  
+                        }  
+                    ]   
+            </remarks>
+        </member>
+        <member name="M:OpenApiSwagger.Controllers.AuthorsControllerV2.GetAuthors">
+            <summary>
+            Get an Authors (V2)
+            </summary>
+            <returns>An ActionResult of type IEnumerable of Authors</returns>
+            <response code ="200" >Returns the list of Authors</response>
+        </member>
+        <member name="M:OpenApiSwagger.Controllers.BooksController.GetBook(System.Guid,System.Guid)">
+            <summary>
+            Get a book by Id
+            </summary>
+            <param name="authorId"></param>
+            <param name="bookId"></param>
+            <returns>An ActionResult of Book</returns>
+            <response code= "200">Returns the requested Book</response> // to change the default description of the status code
+        </member>
+        <member name="T:OpenApiSwagger.Models.Author">
+            <summary>
+            An author with Id, firstname, lastName fields
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.Author.Id">
+            <summary>
+            Id of the Author
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.Author.FirstName">
+            <summary>
+            FirstName of the Author
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.Author.LastName">
+            <summary>
+            LastName of the Author
+            </summary>
+        </member>
+        <member name="T:OpenApiSwagger.Models.AuthorForUpdate">
+            <summary>
+            An author for update with FirstName and LastName
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.AuthorForUpdate.FirstName">
+            <summary>
+            FirstName of the author
+            </summary>
+        </member>
+        <member name="P:OpenApiSwagger.Models.AuthorForUpdate.LastName">
+            <summary>
+            LastName of the author
+            </summary>
+        </member>
+    </members>
+</doc>

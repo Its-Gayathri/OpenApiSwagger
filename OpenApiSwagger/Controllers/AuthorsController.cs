@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 namespace OpenApiSwagger.Controllers
 {
 
-    [Route("api/authors")]
+    //[Route("api/authors")]
+    [Route("api/v{version:apiVersion}/authors")]//URI Versioning - deafult = 1.0
+    //[ApiExplorerSettings(GroupName = "LibraryOpenApiSpecificationAuthors")] //for dealing with multiple specifications(can be added at action level also)
     [ApiController]
     public class AuthorsController : ControllerBase
     {
@@ -25,6 +27,10 @@ namespace OpenApiSwagger.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Get a list of authors
+        /// </summary>
+        /// <returns>An ActionResult of type IEnumerable of Author</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
@@ -32,6 +38,11 @@ namespace OpenApiSwagger.Controllers
             return Ok(_mapper.Map<IEnumerable<Author>>(authorsFromRepo));
         }
 
+        /// <summary>
+        /// Get an Author by His/Her Id
+        /// </summary>
+        /// <param name="authorId">The Id of the author you want to get</param>
+        /// <returns>An ActionResult of type Author</returns>
         [HttpGet("{authorId}")]
         public async Task<ActionResult<Author>> GetAuthor(
             Guid authorId)
@@ -66,6 +77,23 @@ namespace OpenApiSwagger.Controllers
             return Ok(_mapper.Map<Author>(authorFromRepo)); 
         }
 
+        /// <summary>
+        /// Partially Update an Author
+        /// </summary>
+        /// <param name="authorId">The Id of the author you want to get</param>
+        /// <param name="patchDocument">The set of operations to apply to the author</param>
+        /// <returns>An ActionResult of type Author</returns>
+        /// <remarks>
+        /// Sample request (this request updates the authors **first name**)  
+        ///     PATCH /authors/id  
+        ///         [  
+        ///             {  
+        ///                 "op": "replace",  
+        ///                 "path": "/firstname",  
+        ///                 "value": "new first name"  
+        ///             }  
+        ///         ]   
+        /// </remarks>
         [HttpPatch("{authorId}")]
         public async Task<ActionResult<Author>> UpdateAuthor(
             Guid authorId,

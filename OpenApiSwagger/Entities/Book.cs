@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenApiSwagger.Entities
 {
+#pragma warning disable CS1591
     [Table("Books")]
     public class Book
     {
@@ -22,4 +23,5 @@ namespace OpenApiSwagger.Entities
         public Guid AuthorId { get; set; }
         public Author Author { get; set; }
     }
+#pragma warning restore CS1591
 }
